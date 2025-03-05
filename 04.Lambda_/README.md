@@ -102,7 +102,123 @@ int main() {
 }
 ```
 
+### Lambda Capture Modes:
 
+1. `[ ] { }` → No captures.
+2. `[=] { }` → Captures everything by **value**.
+3. `[&] { }` → Captures everything by **reference**.
+4. `[x] { }` → Captures `x` by **value**.
+5. `[&x] { }` → Captures `x` by **reference**.
+6. `[x, &] { }` → Captures `x` by **value**, everything else by **reference**.
+7. `[&x, =] { }` → Captures `x` by **reference**, everything else by **value**.
+
+These capture modes control how variables from the surrounding scope are accessed inside a lambda function. They are essential for managing variable lifetimes and avoiding unintended side effects in C++ programs.
+
+### 1. **No Capture (`[]`)**
+
+```c++
+#include <iostream>
+
+int main() {
+    auto lambda = []() { std::cout << "Hello, Lambda!" << std::endl; };
+    lambda(); // Output: Hello, Lambda!
+    return 0;
+}
+```
+
+### 2. **Capture Everything by Value (`[=]`)**
+
+```c++
+#include <iostream>
+
+int main() {
+    int x = 10, y = 20;
+    auto lambda = [=]() { std::cout << x + y << std::endl; };
+    lambda(); // Output: 30
+    return 0;
+}
+```
+
+> Variables `x` and `y` are copied into the lambda.
+
+### 3. **Capture Everything by Reference (`[&]`)**
+
+```c++
+#include <iostream>
+
+int main() {
+    int x = 10, y = 20;
+    auto lambda = [&]() { x += 5; y += 5; };
+    lambda();
+    std::cout << x << " " << y << std::endl; // Output: 15 25
+    return 0;
+}
+```
+
+> Modifications inside the lambda affect the original variables.
+
+### 4. **Capture a Specific Variable by Value (`[x]`)**
+
+```
+cppCopyEdit#include <iostream>
+
+int main() {
+    int x = 10, y = 20;
+    auto lambda = [x]() { std::cout << x << std::endl; };
+    lambda(); // Output: 10
+    return 0;
+}
+```
+
+> `x` is copied; modifications inside the lambda won't affect the original `x`.
+
+### 5. **Capture a Specific Variable by Reference (`[&x]`)**
+
+```c++
+#include <iostream>
+
+int main() {
+    int x = 10;
+    auto lambda = [&x]() { x += 10; };
+    lambda();
+    std::cout << x << std::endl; // Output: 20
+    return 0;
+}
+```
+
+> `x` is captured by reference, so changes inside the lambda modify `x`.
+
+### 6. **Capture `x` by Value and Everything Else by Reference (`[x, &]`)**
+
+```c++
+#include <iostream>
+
+int main() {
+    int x = 10, y = 20;
+    auto lambda = [x, &]() { std::cout << x << " " << ++y << std::endl; };
+    lambda();
+    std::cout << y << std::endl; // Output: 21
+    return 0;
+}
+```
+
+> `x` is captured by value (unchanged in the outer scope), `y` is captured by reference (modified).
+
+### 7. **Capture `x` by Reference and Everything Else by Value (`[&x, =]`)**
+
+```c++
+#include <iostream>
+
+int main() {
+    int x = 10, y = 20;
+    auto lambda = [&x, =]() { x += 10; std::cout << y << std::endl; };
+    lambda();
+    std::cout << x << std::endl; // Output: 20
+    return 0;
+}
+```
+
+> `x` is modified as it's captured by reference, while `y` is captured by value and remains unchanged.
 
 #### Function Wrapper
 
