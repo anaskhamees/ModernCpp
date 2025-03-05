@@ -159,8 +159,8 @@ int main() {
 
 ### 4. **Capture a Specific Variable by Value (`[x]`)**
 
-```
-cppCopyEdit#include <iostream>
+```c++
+#include <iostream>
 
 int main() {
     int x = 10, y = 20;
